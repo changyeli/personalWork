@@ -4,15 +4,13 @@ import re
 import urllib2
 import csv
 
-url = 'https://www.youtube.com/results?sp=EgIQAQ%253D%253D&q=na+speakers'
+# initialize data storage
 head = []
 uploader = []
 des = []
 view = []
-my_page = urllib2.urlopen(url)
-soup = bs(my_page, 'lxml')
 
-# test No.1
+# function
 def getTitle():
 	for title in soup.findAll('h3', attrs = {'class': 'yt-lockup-title'}):
 		temp = title.find('a').text.strip()
@@ -26,10 +24,26 @@ def getUser():
 
 def getView():
 	for views in soup.findAll('ul', attrs = {'class': 'yt-lockup-meta-info'}):
-		s1 = str(views.findAll('li')[1]).replace(',', '')
-		s1 = re.findall('\d+', s1)[0]
+		s1 = str(views.findAll('li')).replace(',', '')
+		s1 = re.findall('\d+', s1)[1]
+		print s1
 		view.append(s1)
 
 def getDesc():
 	for dess in soup.findAll('div', attrs = {'class': 'yt-lockup-description yt-ui-ellipsis yt-ui-ellipsis-2'}):
 		des.append(dess.text.encode('utf-8'))
+
+
+# spider process
+
+base = 'https://www.youtube.com/results?search_query='
+query = ['na+speaker', 'aa+speaker']
+count = 1 # starting page
+page = '&page='
+
+
+url = base + 'na+speaker' + page + str(count)
+my_page = urllib2.urlopen(url)
+soup = bs(my_page, 'html.parser')
+getDesc()
+print des
